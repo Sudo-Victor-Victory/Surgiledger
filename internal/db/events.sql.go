@@ -72,3 +72,29 @@ func (q *Queries) GetEpisodeEvents(ctx context.Context, episodeID pgtype.UUID) (
 	}
 	return items, nil
 }
+
+const getEventById = `-- name: GetEventById :one
+SELECT id, episode_id, event_type, payload, created_at
+FROM events
+WHERE episode_id = $1
+AND id = $2
+ORDER BY created_at ASC
+`
+
+type GetEventByIdParams struct {
+	EpisodeID pgtype.UUID
+	ID        pgtype.UUID
+}
+
+func (q *Queries) GetEventById(ctx context.Context, arg GetEventByIdParams) (Event, error) {
+	row := q.db.QueryRow(ctx, getEventById, arg.EpisodeID, arg.ID)
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.EpisodeID,
+		&i.EventType,
+		&i.Payload,
+		&i.CreatedAt,
+	)
+	return i, err
+}

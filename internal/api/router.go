@@ -67,5 +67,31 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 
 		createEvent(c, pool, episodeID, eventType)
 	})
+
+	router.GET("/episodes/:id/events", func(c *gin.Context) {
+		var pgUUID pgtype.UUID
+		err := pgUUID.Scan(c.Param("id"))
+		if err != nil {
+			fmt.Println("Sorry bad user data for getting all events")
+			return
+		}
+		getEpisodeEvents(c, pool, pgUUID)
+	})
+
+	router.GET("/episodes/:id/events/:event_id", func(c *gin.Context) {
+		var episode_id pgtype.UUID
+		err := episode_id.Scan(c.Param("id"))
+		if err != nil {
+			fmt.Println("Sorry bad user data for getting all events")
+			return
+		}
+		var event_id pgtype.UUID
+		err = event_id.Scan(c.Param("event_id"))
+		if err != nil {
+			fmt.Println("Sorry bad user data for getting all events")
+			return
+		}
+		getEventEpisode(c, pool, episode_id, event_id)
+	})
 	return router
 }

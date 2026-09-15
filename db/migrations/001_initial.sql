@@ -26,6 +26,23 @@ CREATE TABLE events (
 CREATE INDEX events_episode_id_idx
     ON events (episode_id);
 
+CREATE TABLE participants (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    episode_id UUID NOT NULL REFERENCES episodes(id),
+
+    organization_name TEXT NOT NULL,
+    participant_type TEXT NOT NULL,
+
+    contact_name TEXT,
+    email TEXT,
+    phone TEXT,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX participants_episode_id_idx
+    ON participants (episode_id);
 
 -- +goose Down
 
