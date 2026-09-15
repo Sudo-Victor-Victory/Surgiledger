@@ -22,3 +22,15 @@ type Event struct {
 	Payload   []byte
 	CreatedAt pgtype.Timestamptz
 }
+
+type Participant struct {
+	ID               pgtype.UUID
+	EpisodeID        pgtype.UUID
+	OrganizationName string
+	ParticipantType  string
+	ContactName      pgtype.Text
+	Email            pgtype.Text
+	Phone            pgtype.Text
+	CreatedAt        pgtype.Timestamptz
+	UpdatedAt        pgtype.Timestamptz
+}
