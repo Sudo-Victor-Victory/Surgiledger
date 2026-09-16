@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +19,9 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 		var pgUUID pgtype.UUID
 		err := pgUUID.Scan(c.Param("id"))
 		if err != nil {
-			fmt.Println("Sorry bad user data")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid episode ID",
+			})
 			return
 		}
 		deleteEpisode(c, pool, pgUUID)
@@ -30,7 +31,9 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 		var pgUUID pgtype.UUID
 		err := pgUUID.Scan(c.Param("id"))
 		if err != nil {
-			fmt.Println("Sorry bad user data")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid episode ID",
+			})
 			return
 		}
 		getEpisode(c, pool, pgUUID)
@@ -43,7 +46,9 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 		err := pgUUID.Scan(c.Param("id"))
 
 		if err != nil {
-			fmt.Println("Sorry bad user data")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid episode ID",
+			})
 			return
 		}
 		updateEpisodeStatus(c, pool, pgUUID, status)
@@ -72,7 +77,9 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 		var pgUUID pgtype.UUID
 		err := pgUUID.Scan(c.Param("id"))
 		if err != nil {
-			fmt.Println("Sorry bad user data for getting all events")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Sorry bad user data for getting all events",
+			})
 			return
 		}
 		getEpisodeEvents(c, pool, pgUUID)
@@ -80,15 +87,20 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 
 	router.GET("/episodes/:id/events/:event_id", func(c *gin.Context) {
 		var episode_id pgtype.UUID
+		var event_id pgtype.UUID
+
 		err := episode_id.Scan(c.Param("id"))
 		if err != nil {
-			fmt.Println("Sorry bad user data for getting all events")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid episode id",
+			})
 			return
 		}
-		var event_id pgtype.UUID
 		err = event_id.Scan(c.Param("event_id"))
 		if err != nil {
-			fmt.Println("Sorry bad user data for getting all events")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid event id",
+			})
 			return
 		}
 		getEventEpisode(c, pool, episode_id, event_id)

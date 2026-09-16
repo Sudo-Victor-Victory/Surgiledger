@@ -17,5 +17,4 @@ AND id = $2;
 -- name: GetEpisodeEvents :many
 SELECT *
 FROM events
-WHERE episode_id = $1
-ORDER BY created_at ASC;
+WHERE episode_id = $1;
